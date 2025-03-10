@@ -1,0 +1,10 @@
+# compiled output
+back-end-api/dist
+back-end-api/node_modules
+back-end-api/build
+back-end-api/.env
+
+front-end/dist
+front-end/node_modules
+front-end/build
+front-end/.env
