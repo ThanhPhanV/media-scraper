@@ -5,7 +5,7 @@ import { MediaEntity } from './media.entity';
 
 @Entity({ name: 'scraper' })
 export class ScraperEntity extends BaseEntity {
-  @Column({ name: 'url' })
+  @Column({ name: 'url', unique: true })
   url: string;
 
   @OneToMany(() => MediaEntity, (media) => media.webPage)
