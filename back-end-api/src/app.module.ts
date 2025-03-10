@@ -7,13 +7,14 @@ import { UserModule } from './modules/user/user.module';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { ResTransformInterceptor } from './interceptor/response-transform.itct';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { DatabaseConfigService } from './config/database.config';
 import { LoggerService } from './modules/logger/logger.service';
 import { LoggerRepository } from './modules/logger/repository/logger.repository';
 import { LoggerEntity } from './modules/logger/entity/logger.entity';
 import { HttpExceptionFilter } from './filter/http-exception.filter';
 import { CatchEverythingFilter } from './filter/all-exception.filter';
+import { BullModule } from '@nestjs/bullmq';
 
 @Module({
   imports: [
@@ -21,6 +22,16 @@ import { CatchEverythingFilter } from './filter/all-exception.filter';
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useClass: DatabaseConfigService,
+    }),
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        connection: {
+          host: configService.get('REDIS_HOST'),
+          port: configService.get('REDIS_PORT'),
+        },
+      }),
+      inject: [ConfigService],
     }),
     TypeOrmModule.forFeature([LoggerEntity]),
     AuthModule,
