@@ -9,6 +9,8 @@ import { BullModule } from '@nestjs/bullmq';
 import { ScraperQueueName } from './enum/scraper-queue-name.enum';
 import { ScraperStorageConsumer } from './consumer/scraper-storage.consumer';
 import { ScraperProcessingConsumer } from './consumer/scraper-processing.consumer';
+import { PuppeteerService } from './puppeteer.service';
+import { LoggerModule } from '../logger/logger.module';
 
 @Module({
   imports: [
@@ -20,6 +22,7 @@ import { ScraperProcessingConsumer } from './consumer/scraper-processing.consume
     BullModule.registerQueue({
       name: ScraperQueueName.SCRAPER_PROCESSING_QUEUE,
     }),
+    LoggerModule,
   ],
   controllers: [ScraperController],
   providers: [
@@ -27,6 +30,10 @@ import { ScraperProcessingConsumer } from './consumer/scraper-processing.consume
     ScraperRepository,
     ScraperStorageConsumer,
     ScraperProcessingConsumer,
+    {
+      provide: PuppeteerService,
+      useValue: new PuppeteerService(),
+    },
   ],
 })
 export class ScraperModule {}

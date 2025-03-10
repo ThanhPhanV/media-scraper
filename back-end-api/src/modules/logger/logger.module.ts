@@ -7,5 +7,6 @@ import { LoggerRepository } from './repository/logger.repository';
 @Module({
   imports: [TypeOrmModule.forFeature([LoggerEntity])],
   providers: [LoggerService, LoggerRepository],
+  exports: [LoggerService],
 })
 export class LoggerModule {}

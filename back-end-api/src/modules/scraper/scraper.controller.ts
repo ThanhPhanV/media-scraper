@@ -7,8 +7,14 @@ import { ScraperService } from './scraper.service';
 @Controller('scraper')
 export class ScraperController {
   constructor(private readonly scraperService: ScraperService) {}
+
   @Post()
   async scrape(@Body() payload: CreateScrapeDto) {
     return this.scraperService.saveInitScrape(payload);
+  }
+
+  @Post('process-now')
+  async processNow(@Body() payload: CreateScrapeDto) {
+    return this.scraperService.processNow(payload);
   }
 }
