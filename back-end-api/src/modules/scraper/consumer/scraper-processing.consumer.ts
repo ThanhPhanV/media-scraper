@@ -8,14 +8,19 @@ import { ScraperStatus } from '../enum/scraper-status.enum';
 import { PuppeteerService } from '../puppeteer.service';
 import { ScraperRepository } from '../repository/scraper.repository';
 import { LoggerService } from '../../../modules/logger/logger.service';
+import { MediaRepository } from '../repository/media.repository';
+import { MediaType } from '../enum/media-type.enum';
+import { DataSource } from 'typeorm';
 
 @Processor(ScraperQueueName.SCRAPER_PROCESSING_QUEUE)
 @Injectable()
 export class ScraperProcessingConsumer extends WorkerHost {
   constructor(
     private readonly scraperRepository: ScraperRepository,
+    private readonly mediaRepository: MediaRepository,
     private readonly puppeteerService: PuppeteerService,
     private readonly loggerService: LoggerService,
+    private dataSource: DataSource,
   ) {
     super();
   }
@@ -30,7 +35,6 @@ export class ScraperProcessingConsumer extends WorkerHost {
 
   async processScraper(job: Job<ScrapeProcessDto>) {
     try {
-      console.log('Processing scraper ' + job.data.id);
       const { id } = job.data;
       const scraper = await this.scraperRepository.findOne({
         where: { id },
@@ -40,14 +44,26 @@ export class ScraperProcessingConsumer extends WorkerHost {
       }
 
       const scrapeResult = await this.puppeteerService.scrape(scraper.url);
-      scraper.imageUrls = [
-        ...(scraper.imageUrls || []),
-        ...scrapeResult.imageUrls,
-      ];
-      scraper.videoUrls = [
-        ...(scraper.videoUrls || []),
-        ...scrapeResult.videoUrls,
-      ];
+      const mediaPayload = [];
+      if (scrapeResult.imageUrls.length) {
+        mediaPayload.push(
+          ...scrapeResult.imageUrls.map((mediaUrl) => ({
+            url: mediaUrl,
+            type: MediaType.IMAGE,
+            scraperId: scraper.id,
+          })),
+        );
+      }
+      if (scrapeResult.videoUrls.length) {
+        mediaPayload.push(
+          ...scrapeResult.imageUrls.map((mediaUrl) => ({
+            url: mediaUrl,
+            type: MediaType.IMAGE,
+            scraperId: scraper.id,
+          })),
+        );
+      }
+      await this.mediaRepository.save(mediaPayload);
       scraper.status = ScraperStatus.COMPLETED;
       await this.scraperRepository.save(scraper);
       return true;

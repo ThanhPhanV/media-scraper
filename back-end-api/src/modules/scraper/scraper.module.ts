@@ -11,11 +11,13 @@ import { ScraperStorageConsumer } from './consumer/scraper-storage.consumer';
 import { ScraperProcessingConsumer } from './consumer/scraper-processing.consumer';
 import { PuppeteerService } from './puppeteer.service';
 import { LoggerModule } from '../logger/logger.module';
+import { MediaEntity } from './entity/media.entity';
+import { MediaRepository } from './repository/media.repository';
 
 @Module({
   imports: [
     UserModule,
-    TypeOrmModule.forFeature([ScraperEntity]),
+    TypeOrmModule.forFeature([ScraperEntity, MediaEntity]),
     BullModule.registerQueue({
       name: ScraperQueueName.SCRAPER_STORAGE_QUEUE,
     }),
@@ -27,6 +29,7 @@ import { LoggerModule } from '../logger/logger.module';
   controllers: [ScraperController],
   providers: [
     ScraperService,
+    MediaRepository,
     ScraperRepository,
     ScraperStorageConsumer,
     ScraperProcessingConsumer,
