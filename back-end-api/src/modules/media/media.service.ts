@@ -27,6 +27,11 @@ export class MediaService {
         type: payload.type,
       });
     }
+    if (payload.scraperId) {
+      mediaQuery.andWhere('media.scraperId = :scraperId', {
+        scraperId: payload.scraperId,
+      });
+    }
     const [scrapers, total] = await mediaQuery
       .skip((payload.page - 1) * payload.limit)
       .take(payload.limit)

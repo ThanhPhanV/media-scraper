@@ -12,4 +12,9 @@ export class GetMediaDto extends BasePaginationDto {
   @IsString()
   @IsNotEmpty()
   type?: MediaType;
+
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  scraperId?: string;
 }
