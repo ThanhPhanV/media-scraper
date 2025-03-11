@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { AuthReducer } from "./reducers";
+import { ScraperReducer } from "./reducers/scraper-reducer";
+import { AuthReducer } from "./reducers/auth-reducer";
 
 export const store = configureStore({
   reducer: {
     auth: AuthReducer,
+    scraper: ScraperReducer,
   },
 });
 

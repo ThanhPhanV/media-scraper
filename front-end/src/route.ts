@@ -1,10 +1,10 @@
-import HomePage from "./pages/home-page";
+import ScraperPage from "./pages/scraper-page";
 import SignInPage from "./pages/sign-in-page";
 
 export const AppRoutes = [
   {
     path: "/",
-    element: HomePage,
+    element: ScraperPage,
     isPrivate: true,
   },
   {
