@@ -16,3 +16,8 @@
   font-weight: 300;
   font-style: normal;
 }
+
+.menu-item-selected {
+  background-color: #e7f8ff;
+  color: #087ea4;
+}

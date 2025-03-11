@@ -17,12 +17,14 @@ export interface TableProps {
   totalPage: number;
   page: number;
   totalCount?: number;
+  handleChangePage?: (event: React.ChangeEvent<unknown>, value: number) => void;
 }
 
 export default function BasicTable({
   data: { titles, rows },
   page,
   totalPage,
+  handleChangePage,
 }: TableProps) {
   return (
     <div>
@@ -45,7 +47,7 @@ export default function BasicTable({
               >
                 {row.map((cell) => {
                   return (
-                    <TableCell key={cell} scope="row">
+                    <TableCell key={cell} size="medium" width={200}>
                       {cell}
                     </TableCell>
                   );
@@ -56,7 +58,12 @@ export default function BasicTable({
         </Table>
       </TableContainer>
       <div className="mt-3 text-right flex justify-end">
-        <Pagination count={totalPage} page={page} />
+        <Pagination
+          color="primary"
+          count={totalPage}
+          page={page}
+          onChange={handleChangePage}
+        />
       </div>
     </div>
   );

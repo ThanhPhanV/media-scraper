@@ -11,11 +11,11 @@ export function DashboardLayout({
   title?: string;
 }) {
   return (
-    <div className="container grid grid-cols-12 gap-12 funnel-display-300 mx-auto">
+    <div className="grid grid-cols-12 funnel-display-300 mx-auto">
       <div className="grid col-span-12">
         <AppTitle />
       </div>
-      <div className="grid col-span-3">
+      <div className="grid col-span-3 mt-3">
         <div>
           <AppMenu />
         </div>
