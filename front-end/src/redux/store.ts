@@ -1,11 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { ScraperReducer } from "./reducers/scraper-reducer";
 import { AuthReducer } from "./reducers/auth-reducer";
+import { MediaReducer } from "./reducers/media-reducer";
 
 export const store = configureStore({
   reducer: {
     auth: AuthReducer,
     scraper: ScraperReducer,
+    media: MediaReducer,
   },
 });
 

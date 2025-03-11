@@ -13,10 +13,12 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { HeaderTitle } from "../components/h1-header";
 import { IconButton } from "@mui/material";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
+import { useSearchParams } from "react-router-dom";
 
 function ScraperPage() {
   const scraper = useSelector((state: RootState) => state.scraper);
   const dispatch = useDispatch();
+  const [searchParams, setSearchParams] = useSearchParams();
   const {
     register,
     control,
@@ -34,7 +36,7 @@ function ScraperPage() {
 
   const fetchScraperData = async (page: number = 1) => {
     try {
-      const response = await axios.get(`scraper?page=${page}`);
+      const response = await axios.get(`scraper`, { params: { page } });
       const dataFetched = response.data?.data;
       dispatch(
         setScrapers({
@@ -60,12 +62,13 @@ function ScraperPage() {
     event: React.ChangeEvent<unknown>,
     value: number
   ) => {
-    fetchScraperData(value);
+    setSearchParams({ page: value.toString() });
   };
 
   useEffect(() => {
-    fetchScraperData();
-  }, []);
+    const page = searchParams.get("page");
+    fetchScraperData(page ? Number(page) : 1);
+  }, [searchParams.get("page")]);
 
   const reload = () => {
     fetchScraperData(scraper?.page || 1);

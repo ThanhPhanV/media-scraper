@@ -1,3 +1,4 @@
+import MediaPage from "./pages/media-page";
 import ScraperPage from "./pages/scraper-page";
 import SignInPage from "./pages/sign-in-page";
 
@@ -10,7 +11,7 @@ export const AppRoutes = [
   },
   {
     path: "/media",
-    element: ScraperPage,
+    element: MediaPage,
     name: "Media",
     isPrivate: true,
   },
