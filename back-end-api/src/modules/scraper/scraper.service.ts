@@ -5,6 +5,8 @@ import { Queue } from 'bullmq';
 import { CreateScrapeDto } from './dto/create-scraper.dto';
 import { ScraperQueueName } from './enum/scraper-queue-name.enum';
 import { ScraperProcessQueueJob } from './enum/scraper-process-queue.enum';
+import { GetScraperDto } from './dto/get-scraper.dto';
+import { UserEntity } from '../user/entity/user.entity';
 
 @Injectable()
 export class ScraperService {
@@ -14,9 +16,9 @@ export class ScraperService {
     private scraperProcessingQueue: Queue,
   ) {}
 
-  async saveInitScrape(payload: CreateScrapeDto) {
+  async saveInitScrape(payload: CreateScrapeDto, user: UserEntity) {
     const scrape = await this.scraperRepository.save(
-      payload.urls.map((url) => ({ url })),
+      payload.urls.map((url) => ({ url, userId: user.id })),
     );
     this.scraperProcessingQueue.addBulk(
       scrape.map((scrape) => ({
@@ -25,5 +27,25 @@ export class ScraperService {
       })),
     );
     return scrape;
+  }
+
+  async getScrapers(payload: GetScraperDto, user: UserEntity) {
+    const scrapeQuery = this.scraperRepository.createQueryBuilder('scrape');
+    scrapeQuery.where('scrape.userId = :userId', { userId: user.id });
+    if (payload.search) {
+      scrapeQuery.andWhere('scrape.url LIKE :search', {
+        search: `%${payload.search}%`,
+      });
+    }
+    if (payload.status) {
+      scrapeQuery.andWhere('scrape.status = :status', {
+        status: payload.status,
+      });
+    }
+    const [scrapers, total] = await scrapeQuery
+      .skip((payload.page - 1) * payload.limit)
+      .take(payload.limit)
+      .getManyAndCount();
+    return { scrapers, total };
   }
 }
