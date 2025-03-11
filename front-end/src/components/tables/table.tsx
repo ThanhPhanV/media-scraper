@@ -27,7 +27,7 @@ export default function BasicTable({
   handleChangePage,
 }: TableProps) {
   return (
-    <div>
+    <div className="mt-3">
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
