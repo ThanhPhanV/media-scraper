@@ -7,7 +7,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ScraperEntity } from './entity/scraper.entity';
 import { BullModule } from '@nestjs/bullmq';
 import { ScraperQueueName } from './enum/scraper-queue-name.enum';
-import { ScraperStorageConsumer } from './consumer/scraper-storage.consumer';
 import { ScraperProcessingConsumer } from './consumer/scraper-processing.consumer';
 import { PuppeteerService } from './puppeteer.service';
 import { LoggerModule } from '../logger/logger.module';
@@ -31,7 +30,6 @@ import { MediaRepository } from './repository/media.repository';
     ScraperService,
     MediaRepository,
     ScraperRepository,
-    ScraperStorageConsumer,
     ScraperProcessingConsumer,
     {
       provide: PuppeteerService,

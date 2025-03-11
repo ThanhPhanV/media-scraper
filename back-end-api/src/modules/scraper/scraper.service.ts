@@ -4,26 +4,26 @@ import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 import { CreateScrapeDto } from './dto/create-scraper.dto';
 import { ScraperQueueName } from './enum/scraper-queue-name.enum';
-import { ScraperStorageQueueJob } from './enum/scraper-storage-queue.enum';
-import { PuppeteerService } from './puppeteer.service';
+import { ScraperProcessQueueJob } from './enum/scraper-process-queue.enum';
 
 @Injectable()
 export class ScraperService {
   constructor(
     private readonly scraperRepository: ScraperRepository,
-    @InjectQueue(ScraperQueueName.SCRAPER_STORAGE_QUEUE)
-    private scraperStorageQueue: Queue,
-    private readonly puppeteerService: PuppeteerService,
+    @InjectQueue(ScraperQueueName.SCRAPER_PROCESSING_QUEUE)
+    private scraperProcessingQueue: Queue,
   ) {}
 
   async saveInitScrape(payload: CreateScrapeDto) {
-    return this.scraperStorageQueue.add(
-      ScraperStorageQueueJob.ADD_URL,
-      payload,
+    const scrape = await this.scraperRepository.save(
+      payload.urls.map((url) => ({ url })),
     );
-  }
-
-  async processNow(payload: CreateScrapeDto) {
-    return this.puppeteerService.scrape(payload.urls[0]);
+    this.scraperProcessingQueue.addBulk(
+      scrape.map((scrape) => ({
+        name: ScraperProcessQueueJob.SCRAPER_START_PROCESS,
+        data: { id: scrape.id },
+      })),
+    );
+    return scrape;
   }
 }

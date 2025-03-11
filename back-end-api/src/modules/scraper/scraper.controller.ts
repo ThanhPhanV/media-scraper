@@ -12,9 +12,4 @@ export class ScraperController {
   async scrape(@Body() payload: CreateScrapeDto) {
     return this.scraperService.saveInitScrape(payload);
   }
-
-  @Post('process-now')
-  async processNow(@Body() payload: CreateScrapeDto) {
-    return this.scraperService.processNow(payload);
-  }
 }
