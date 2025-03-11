@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { PrivateComponent } from "../components/security/private-component";
 import { axios } from "../configs/axios.config";
 import { DashboardLayout } from "../layouts/dashboard.layout";
@@ -22,6 +22,7 @@ function ScraperPage() {
   const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
   const { startLoading, stopLoading } = useAppLoading();
+  const [page, setPage] = useState(searchParams.get("page") || 1);
   const {
     register,
     control,
@@ -70,7 +71,7 @@ function ScraperPage() {
     event: React.ChangeEvent<unknown>,
     value: number
   ) => {
-    fetchScraperData(value ? Number(value) : 1);
+    setPage(value);
   };
 
   const reload = () => {
@@ -78,8 +79,9 @@ function ScraperPage() {
   };
 
   useEffect(() => {
-    fetchScraperData();
-  }, []);
+    fetchScraperData(Number(page));
+    setSearchParams({ page: page.toString() });
+  }, [page]);
 
   const formatDataToTable = (scrapers: IScraper[]) => {
     const titles = ["URL", "STATUS", "CREATED DATE"];
@@ -99,7 +101,7 @@ function ScraperPage() {
       if (urls.every((url) => !!url)) {
         startLoading();
         await axios.post("scraper", { urls });
-        fetchScraperData();
+        fetchScraperData(Number(page));
         reset();
         stopLoading();
       }

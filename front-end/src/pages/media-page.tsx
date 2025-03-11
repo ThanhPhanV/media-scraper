@@ -14,15 +14,21 @@ import { IMedia } from "../interfaces/media.interface";
 import SearchIcon from "@mui/icons-material/Search";
 import { useAppLoading } from "../hooks/use-app-loading";
 import { removeEmptyFields } from "../utils/func.util";
+import { useSearchParams } from "react-router-dom";
 
 function MediaPage() {
   const { startLoading, stopLoading } = useAppLoading();
+
+  const [searchParams, setSearchParams] = useSearchParams();
   const media = useSelector((state: RootState) => state.media);
   const dispatch = useDispatch();
-  const [searchInput, setSearchInput] = useState("");
-  const [isFirstRender, setIsFirstRender] = useState(true);
-  const [type, setType] = useState("");
+  const [searchInput, setSearchInput] = useState(
+    searchParams.get("search") || ""
+  );
 
+  const [type, setType] = useState(searchParams.get("type") || "");
+  const [page, setPage] = useState(searchParams.get("page") || 1);
+  const [isFirstRender, setIsFirstRender] = useState(true);
   const fetchData = async ({
     page,
     type,
@@ -57,21 +63,17 @@ function MediaPage() {
     event: React.ChangeEvent<unknown>,
     value: number
   ) => {
-    fetchData({
-      page: value,
-      type,
-      search: searchInput,
-    });
+    setPage(value);
   };
 
   useEffect(() => {
     fetchData({
-      page: 1,
-      type: "",
-      search: "",
+      page: Number(page),
+      type,
+      search: searchInput,
     });
     setIsFirstRender(false);
-  }, []);
+  }, [searchInput, type, page]);
 
   useEffect(() => {
     if (isFirstRender) return;
@@ -81,6 +83,13 @@ function MediaPage() {
         type,
         search: searchInput,
       });
+      setSearchParams(
+        removeEmptyFields({
+          search: searchInput,
+          type,
+          page: media.page.toString(),
+        })
+      );
     }, 500);
     return () => clearTimeout(timeout);
   }, [searchInput]);
@@ -88,11 +97,18 @@ function MediaPage() {
   useEffect(() => {
     if (isFirstRender) return;
     fetchData({
-      page: media.page ? Number(media.page) : 1,
+      page: page ? Number(page) : 1,
       type,
       search: searchInput,
     });
-  }, [type]);
+    setSearchParams(
+      removeEmptyFields({
+        search: searchInput,
+        type,
+        page: page.toString(),
+      })
+    );
+  }, [page, type]);
 
   const reload = () => {
     fetchData({
