@@ -8,10 +8,10 @@ import { ScraperStatus } from '../enum/scraper-status.enum';
 import { PuppeteerService } from '../puppeteer.service';
 import { ScraperRepository } from '../repository/scraper.repository';
 import { LoggerService } from '../../../modules/logger/logger.service';
-import { MediaType } from '../enum/media-type.enum';
 import { DataSource } from 'typeorm';
 import { ScraperEntity } from '../entity/scraper.entity';
-import { MediaEntity } from '../entity/media.entity';
+import { MediaType } from '../../../modules/media/enum/media-type.enum';
+import { MediaEntity } from '../../../modules/media/entity/media.entity';
 
 @Processor(ScraperQueueName.SCRAPER_PROCESSING_QUEUE)
 @Injectable()

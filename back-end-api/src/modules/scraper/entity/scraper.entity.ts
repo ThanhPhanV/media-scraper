@@ -1,15 +1,15 @@
 import { BaseEntity } from '../../../common/entity/base.entity';
 import { Column, Entity, JoinTable, ManyToOne, OneToMany } from 'typeorm';
 import { ScraperStatus } from '../enum/scraper-status.enum';
-import { MediaEntity } from './media.entity';
 import { UserEntity } from '../../../modules/user/entity/user.entity';
+import { MediaEntity } from '../../../modules/media/entity/media.entity';
 
 @Entity({ name: 'scraper' })
 export class ScraperEntity extends BaseEntity {
   @Column({ name: 'url', unique: true })
   url: string;
 
-  @OneToMany(() => MediaEntity, (media) => media.webPage)
+  @OneToMany(() => MediaEntity, (media) => media.scraper)
   media: MediaEntity[];
 
   @Column({

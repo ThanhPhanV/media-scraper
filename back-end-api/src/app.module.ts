@@ -15,6 +15,7 @@ import { LoggerEntity } from './modules/logger/entity/logger.entity';
 import { HttpExceptionFilter } from './filter/http-exception.filter';
 import { CatchEverythingFilter } from './filter/all-exception.filter';
 import { BullModule } from '@nestjs/bullmq';
+import { MediaModule } from './modules/media/media.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { BullModule } from '@nestjs/bullmq';
     AuthModule,
     ScraperModule,
     UserModule,
+    MediaModule,
   ],
   controllers: [AppController],
   providers: [

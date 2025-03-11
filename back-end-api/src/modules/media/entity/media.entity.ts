@@ -1,7 +1,7 @@
 import { BaseEntity } from '../../../common/entity/base.entity';
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { MediaType } from '../enum/media-type.enum';
-import { ScraperEntity } from './scraper.entity';
+import { ScraperEntity } from '../../../modules/scraper/entity/scraper.entity';
 
 @Entity({ name: 'media' })
 export class MediaEntity extends BaseEntity {
@@ -16,5 +16,5 @@ export class MediaEntity extends BaseEntity {
 
   @ManyToOne(() => ScraperEntity, (scraper) => scraper.id)
   @JoinColumn({ name: 'scraper_id' })
-  webPage: ScraperEntity;
+  scraper: ScraperEntity;
 }

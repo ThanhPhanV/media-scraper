@@ -10,8 +10,8 @@ import { ScraperQueueName } from './enum/scraper-queue-name.enum';
 import { ScraperProcessingConsumer } from './consumer/scraper-processing.consumer';
 import { PuppeteerService } from './puppeteer.service';
 import { LoggerModule } from '../logger/logger.module';
-import { MediaEntity } from './entity/media.entity';
-import { MediaRepository } from './repository/media.repository';
+import { MediaEntity } from '../media/entity/media.entity';
+import { MediaRepository } from '../media/repository/media.repository';
 
 @Module({
   imports: [

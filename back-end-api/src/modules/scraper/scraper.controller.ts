@@ -11,7 +11,6 @@ import { AuthGuard } from '../auth/auth.guard';
 import { CreateScrapeDto } from './dto/create-scraper.dto';
 import { ScraperService } from './scraper.service';
 import { GetScraperDto } from './dto/get-scraper.dto';
-import { Request } from 'express';
 
 @UseGuards(AuthGuard)
 @Controller('scraper')
