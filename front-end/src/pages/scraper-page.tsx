@@ -15,6 +15,7 @@ import { IconButton } from "@mui/material";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import { useSearchParams } from "react-router-dom";
 import { useAppLoading } from "../hooks/use-app-loading";
+import { removeEmptyFields } from "../utils/func.util";
 
 function ScraperPage() {
   const scraper = useSelector((state: RootState) => state.scraper);
@@ -36,10 +37,12 @@ function ScraperPage() {
     name: "inputs",
   });
 
-  const fetchScraperData = async (page: number = 1) => {
+  const fetchScraperData = async (page: number) => {
     try {
       startLoading();
-      const response = await axios.get(`scraper`, { params: { page } });
+      const response = await axios.get(`scraper`, {
+        params: removeEmptyFields({ page }),
+      });
       const dataFetched = response.data?.data;
       dispatch(
         setScrapers({
@@ -67,17 +70,16 @@ function ScraperPage() {
     event: React.ChangeEvent<unknown>,
     value: number
   ) => {
-    setSearchParams({ page: value.toString() });
+    fetchScraperData(value ? Number(value) : 1);
   };
-
-  useEffect(() => {
-    const page = searchParams.get("page");
-    fetchScraperData(page ? Number(page) : 1);
-  }, [searchParams.get("page")]);
 
   const reload = () => {
     fetchScraperData(scraper?.page || 1);
   };
+
+  useEffect(() => {
+    fetchScraperData();
+  }, []);
 
   const formatDataToTable = (scrapers: IScraper[]) => {
     const titles = ["URL", "STATUS", "CREATED DATE"];

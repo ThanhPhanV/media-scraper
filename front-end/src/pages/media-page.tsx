@@ -13,7 +13,6 @@ import { setMedia } from "../redux/reducers/media-reducer";
 import { IMedia } from "../interfaces/media.interface";
 import SearchIcon from "@mui/icons-material/Search";
 import { useAppLoading } from "../hooks/use-app-loading";
-import { omitBy, isEmpty, omit } from "lodash";
 import { removeEmptyFields } from "../utils/func.util";
 
 function MediaPage() {
@@ -21,6 +20,7 @@ function MediaPage() {
   const media = useSelector((state: RootState) => state.media);
   const dispatch = useDispatch();
   const [searchInput, setSearchInput] = useState("");
+  const [isFirstRender, setIsFirstRender] = useState(true);
   const [type, setType] = useState("");
 
   const fetchData = async ({
@@ -70,9 +70,11 @@ function MediaPage() {
       type: "",
       search: "",
     });
+    setIsFirstRender(false);
   }, []);
 
   useEffect(() => {
+    if (isFirstRender) return;
     const timeout = setTimeout(() => {
       fetchData({
         page: media.page ? Number(media.page) : 1,
@@ -84,6 +86,7 @@ function MediaPage() {
   }, [searchInput]);
 
   useEffect(() => {
+    if (isFirstRender) return;
     fetchData({
       page: media.page ? Number(media.page) : 1,
       type,
