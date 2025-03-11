@@ -14,11 +14,13 @@ import { HeaderTitle } from "../components/h1-header";
 import { IconButton } from "@mui/material";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import { useSearchParams } from "react-router-dom";
+import { useAppLoading } from "../hooks/use-app-loading";
 
 function ScraperPage() {
   const scraper = useSelector((state: RootState) => state.scraper);
   const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
+  const { startLoading, stopLoading } = useAppLoading();
   const {
     register,
     control,
@@ -36,6 +38,7 @@ function ScraperPage() {
 
   const fetchScraperData = async (page: number = 1) => {
     try {
+      startLoading();
       const response = await axios.get(`scraper`, { params: { page } });
       const dataFetched = response.data?.data;
       dispatch(
@@ -46,7 +49,9 @@ function ScraperPage() {
           scrapers: dataFetched.scrapers,
         })
       );
+      stopLoading();
     } catch (error) {
+      stopLoading();
       console.error(error);
     }
   };
@@ -76,7 +81,6 @@ function ScraperPage() {
 
   const formatDataToTable = (scrapers: IScraper[]) => {
     const titles = ["URL", "STATUS", "CREATED DATE"];
-    // const rows = scraperInput.map((scraper) => [scraper.url, scraper.status]);
     return {
       titles,
       rows: scrapers.map((scraper) => [
@@ -91,9 +95,11 @@ function ScraperPage() {
     try {
       const urls = data.inputs.map((input) => input.value);
       if (urls.every((url) => !!url)) {
+        startLoading();
         await axios.post("scraper", { urls });
         fetchScraperData();
         reset();
+        stopLoading();
       }
     } catch (e) {
       console.error(e);

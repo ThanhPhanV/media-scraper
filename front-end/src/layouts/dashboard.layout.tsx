@@ -1,12 +1,12 @@
+import LogoutIcon from "@mui/icons-material/Logout";
+import { IconButton, LinearProgress } from "@mui/material";
 import React from "react";
 import { AppTitle } from "../components/app-title";
 import { HeaderTitle } from "../components/h1-header";
 import { AppMenu } from "../components/menu";
-import { useSelector } from "react-redux";
-import { RootState } from "../redux/store";
-import LogoutIcon from "@mui/icons-material/Logout";
 import { useAppAuth } from "../hooks/auth-hook";
-import { IconButton } from "@mui/material";
+import { useAppLoading } from "../hooks/use-app-loading";
+import { AppLoadingProgress } from "../components/progress/app-loading";
 
 export function DashboardLayout({
   children,
@@ -16,8 +16,10 @@ export function DashboardLayout({
   title?: string;
 }) {
   const { user, logout } = useAppAuth();
+  const { isLoading } = useAppLoading();
   return (
     <div className="grid grid-cols-12 funnel-display-300 mx-auto">
+      {isLoading && <AppLoadingProgress />}
       <div className="grid col-span-12">
         <div className="flex items-center justify-between">
           <AppTitle />

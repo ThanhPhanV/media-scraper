@@ -4,6 +4,7 @@ import { SignInHeader } from "../components/sign-in-header";
 import { axios } from "../configs/axios.config";
 import { useAppAuth } from "../hooks/auth-hook";
 import { AuthLayout } from "../layouts/auth-layout";
+import { useAppLoading } from "../hooks/use-app-loading";
 
 type Inputs = {
   userName: string;
@@ -12,6 +13,7 @@ type Inputs = {
 
 function SignInPage() {
   const { user, token, login } = useAppAuth();
+  const { startLoading, stopLoading } = useAppLoading();
   const navigate = useNavigate();
   const {
     register,
@@ -21,10 +23,13 @@ function SignInPage() {
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     try {
+      startLoading();
       const response = await axios.post("auth/sign-in", data);
       login(response.data?.data?.token, response.data?.data?.user);
       navigate("/");
+      stopLoading();
     } catch (error) {
+      stopLoading();
       console.error(error);
     }
   };

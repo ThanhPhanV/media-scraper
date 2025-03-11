@@ -12,14 +12,17 @@ import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import { setMedia } from "../redux/reducers/media-reducer";
 import { IMedia } from "../interfaces/media.interface";
 import { useSearchParams } from "react-router-dom";
+import { useAppLoading } from "../hooks/use-app-loading";
 
 function MediaPage() {
+  const { startLoading, stopLoading } = useAppLoading();
   const media = useSelector((state: RootState) => state.media);
   const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const fetchData = async (page: number = 1) => {
     try {
+      startLoading();
       const response = await axios.get(`media`, { params: { page } });
       const dataFetched = response.data?.data;
       dispatch(
@@ -30,7 +33,9 @@ function MediaPage() {
           media: dataFetched.media,
         })
       );
+      stopLoading();
     } catch (error) {
+      stopLoading();
       console.error(error);
     }
   };
