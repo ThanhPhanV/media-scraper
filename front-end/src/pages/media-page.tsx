@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { PrivateComponent } from "../components/security/private-component";
 import { axios } from "../configs/axios.config";
 import { DashboardLayout } from "../layouts/dashboard.layout";
@@ -11,19 +11,32 @@ import { IconButton } from "@mui/material";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import { setMedia } from "../redux/reducers/media-reducer";
 import { IMedia } from "../interfaces/media.interface";
-import { useSearchParams } from "react-router-dom";
+import SearchIcon from "@mui/icons-material/Search";
 import { useAppLoading } from "../hooks/use-app-loading";
+import { omitBy, isEmpty, omit } from "lodash";
+import { removeEmptyFields } from "../utils/func.util";
 
 function MediaPage() {
   const { startLoading, stopLoading } = useAppLoading();
   const media = useSelector((state: RootState) => state.media);
   const dispatch = useDispatch();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchInput, setSearchInput] = useState("");
+  const [type, setType] = useState("");
 
-  const fetchData = async (page: number = 1) => {
+  const fetchData = async ({
+    page,
+    type,
+    search,
+  }: {
+    page: number;
+    type: string;
+    search: string;
+  }) => {
     try {
       startLoading();
-      const response = await axios.get(`media`, { params: { page } });
+      const response = await axios.get(`media`, {
+        params: removeEmptyFields({ page, type, search }),
+      });
       const dataFetched = response.data?.data;
       dispatch(
         setMedia({
@@ -44,16 +57,46 @@ function MediaPage() {
     event: React.ChangeEvent<unknown>,
     value: number
   ) => {
-    setSearchParams({ page: value.toString() });
+    fetchData({
+      page: value,
+      type,
+      search: searchInput,
+    });
   };
 
   useEffect(() => {
-    const page = searchParams.get("page");
-    fetchData(page ? Number(page) : 1);
-  }, [searchParams.get("page")]);
+    fetchData({
+      page: 1,
+      type: "",
+      search: "",
+    });
+  }, []);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      fetchData({
+        page: media.page ? Number(media.page) : 1,
+        type,
+        search: searchInput,
+      });
+    }, 500);
+    return () => clearTimeout(timeout);
+  }, [searchInput]);
+
+  useEffect(() => {
+    fetchData({
+      page: media.page ? Number(media.page) : 1,
+      type,
+      search: searchInput,
+    });
+  }, [type]);
 
   const reload = () => {
-    fetchData(media?.page || 1);
+    fetchData({
+      page: media.page ? Number(media.page) : 1,
+      type,
+      search: searchInput,
+    });
   };
 
   const formatDataToTable = (media: IMedia[]) => {
@@ -77,6 +120,32 @@ function MediaPage() {
           <IconButton onClick={() => reload()}>
             <RestartAltIcon />
           </IconButton>
+        </div>
+        <div className="flex items-center mt-3">
+          <div className="flex items-center border border-gray-200 rounded-2xl p-2 w-[50%]">
+            <SearchIcon fontSize="medium" />
+            <input
+              type="text"
+              placeholder="Search url"
+              className="w-full p-2 border-none outline-none"
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+            />
+          </div>
+          <div className="ml-8">Type</div>
+          <div>
+            <select
+              className="ml-4 p-4 border border-gray-200 rounded-2xl"
+              value={type}
+              onChange={(e) => {
+                setType(e.target.value);
+              }}
+            >
+              <option value="">All</option>
+              <option value="image">Image</option>
+              <option value="video">Video</option>
+            </select>
+          </div>
         </div>
         <BasicTable
           data={formatDataToTable(media.media || [])}

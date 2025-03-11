@@ -85,7 +85,7 @@ export function AddScraper({
           color="inherit"
           onClick={() => onAppendNew()}
         >
-          ADD
+          NEW
         </Button>
         <Button
           variant="contained"
