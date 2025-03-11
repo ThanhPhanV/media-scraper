@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { MediaRepository } from './repository/media.repository';
 import { UserEntity } from '../user/entity/user.entity';
 import { GetMediaDto } from './dto/get-media.dto';
+import { calPaginationRes } from 'src/utils/pagination.util';
 
 @Injectable()
 export class MediaService {
@@ -32,10 +33,18 @@ export class MediaService {
         scraperId: payload.scraperId,
       });
     }
-    const [scrapers, total] = await mediaQuery
+    const [media, total] = await mediaQuery
       .skip((payload.page - 1) * payload.limit)
       .take(payload.limit)
+      .orderBy('media.createdAt', 'DESC')
       .getManyAndCount();
-    return { scrapers, total };
+    return {
+      media,
+      ...calPaginationRes({
+        totalCount: total,
+        page: payload.page,
+        limit: payload.limit,
+      }),
+    };
   }
 }
