@@ -7,6 +7,7 @@ import { ScraperQueueName } from './enum/scraper-queue-name.enum';
 import { ScraperProcessQueueJob } from './enum/scraper-process-queue.enum';
 import { GetScraperDto } from './dto/get-scraper.dto';
 import { UserEntity } from '../user/entity/user.entity';
+import { calPaginationRes } from 'src/utils/pagination.util';
 
 @Injectable()
 export class ScraperService {
@@ -18,7 +19,12 @@ export class ScraperService {
 
   async saveInitScrape(payload: CreateScrapeDto, user: UserEntity) {
     const scrape = await this.scraperRepository.save(
-      payload.urls.map((url) => ({ url, userId: user.id })),
+      payload.urls.map((url) => ({
+        url,
+        userId: user.id,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      })),
     );
     this.scraperProcessingQueue.addBulk(
       scrape.map((scrape) => ({
@@ -45,7 +51,16 @@ export class ScraperService {
     const [scrapers, total] = await scrapeQuery
       .skip((payload.page - 1) * payload.limit)
       .take(payload.limit)
+      .orderBy('scrape.createdAt', 'DESC')
       .getManyAndCount();
-    return { scrapers, total };
+
+    return {
+      scrapers,
+      ...calPaginationRes({
+        totalCount: total,
+        page: payload.page,
+        limit: payload.limit,
+      }),
+    };
   }
 }

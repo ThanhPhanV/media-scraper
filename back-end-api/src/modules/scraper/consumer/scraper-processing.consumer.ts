@@ -56,6 +56,8 @@ export class ScraperProcessingConsumer extends WorkerHost {
               url: mediaUrl,
               type: MediaType.IMAGE,
               scraperId: scraper.id,
+              createdAt: new Date().toISOString(),
+              updatedAt: new Date().toISOString(),
             })),
           );
         }
@@ -65,6 +67,8 @@ export class ScraperProcessingConsumer extends WorkerHost {
               url: mediaUrl,
               type: MediaType.IMAGE,
               scraperId: scraper.id,
+              createdAt: new Date().toISOString(),
+              updatedAt: new Date().toISOString(),
             })),
           );
         }

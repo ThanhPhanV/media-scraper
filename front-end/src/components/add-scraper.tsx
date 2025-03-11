@@ -37,6 +37,7 @@ interface AddScraperProps {
     "inputs",
     "id"
   >[];
+  errors: any;
 }
 
 interface ScraperInput {
@@ -54,21 +55,31 @@ export function AddScraper({
   onAppendNew,
   register,
   fields,
+  errors,
 }: AddScraperProps) {
   return (
     <form onSubmit={handleSubmit(onAddScraper)}>
       <div>
         {fields.map((field, index) => (
-          <div key={field.id} className="flex gap-2">
+          <div key={field.id} className="">
             <input
-              {...register(`inputs.${index}.value`)}
+              {...register(`inputs.${index}.value`, {
+                required: true,
+                pattern: /^(http|https):\/\/[^ "]+$/,
+              })}
               placeholder={`Enter link ${index + 1}`}
-              className="w-full p-3 my-3 border border-gray-200 rounded-lg"
+              className="w-full p-3 mt-3 border border-gray-200 rounded-lg"
             />
+            {errors.inputs?.[index]?.value?.type === "required" && (
+              <div className="text-red-500 my-3">This field is required</div>
+            )}
+            {errors.inputs?.[index]?.value?.type === "pattern" && (
+              <div className="text-red-500  my-3">Invalid URL</div>
+            )}
           </div>
         ))}
       </div>
-      <div className="mb-8">
+      <div className="mb-8 mt-3">
         <Button
           variant="contained"
           color="inherit"

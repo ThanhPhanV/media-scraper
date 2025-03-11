@@ -11,10 +11,20 @@ import { formatLocalTime } from "../utils/date.util";
 import { AddScraper, ScraperFormData } from "../components/add-scraper";
 import { useFieldArray, useForm } from "react-hook-form";
 import { HeaderTitle } from "../components/h1-header";
+import { IconButton } from "@mui/material";
+import RestartAltIcon from "@mui/icons-material/RestartAlt";
+
 function ScraperPage() {
   const scraper = useSelector((state: RootState) => state.scraper);
   const dispatch = useDispatch();
-  const { register, control, handleSubmit, reset, watch } = useForm({
+  const {
+    register,
+    control,
+    handleSubmit,
+    reset,
+    watch,
+    formState: { errors },
+  } = useForm({
     defaultValues: { inputs: [{ value: "" }] }, // Initial input field
   });
   const { fields, append } = useFieldArray({
@@ -57,6 +67,10 @@ function ScraperPage() {
     fetchScraperData();
   }, []);
 
+  const reload = () => {
+    fetchScraperData(scraper?.page || 1);
+  };
+
   const formatDataToTable = (scrapers: IScraper[]) => {
     const titles = ["URL", "STATUS", "CREATED DATE"];
     // const rows = scraperInput.map((scraper) => [scraper.url, scraper.status]);
@@ -86,7 +100,12 @@ function ScraperPage() {
   return (
     <PrivateComponent>
       <DashboardLayout>
-        <HeaderTitle title="Scrapers" />
+        <div className="flex items-center">
+          <HeaderTitle title="Scrapers" />
+          <IconButton onClick={() => reload()}>
+            <RestartAltIcon />
+          </IconButton>
+        </div>
         <BasicTable
           data={formatDataToTable(scraper.scrapers || [])}
           page={scraper.page}
@@ -102,6 +121,7 @@ function ScraperPage() {
           reset={reset}
           fields={fields}
           onAppendNew={onAppendNew}
+          errors={errors}
         />
       </DashboardLayout>
     </PrivateComponent>
