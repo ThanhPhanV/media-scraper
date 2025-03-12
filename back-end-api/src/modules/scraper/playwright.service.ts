@@ -3,34 +3,47 @@ import { chromium } from 'playwright';
 export class PlaywrightService {
   async scrape(url: string) {
     const browser = await chromium.launch();
-    const page = await browser.newPage();
+    try {
+      const page = await browser.newPage();
 
-    await page.goto(url, { waitUntil: 'networkidle' });
-    await Promise.race([
-      page.waitForSelector('img', { timeout: 10000 }),
-      page.waitForSelector('video', { state: 'attached' }),
-    ]);
+      await page.goto(url, { waitUntil: 'networkidle' });
+      await Promise.race([
+        page.waitForSelector('img', { timeout: 5000 }),
+        page.waitForSelector('video', { timeout: 5000 }),
+      ]);
 
-    const evaluateRes = await page.evaluate(() => {
-      const imageUrls: string[] = [];
-      const videoUrls: string[] = [];
-      document
-        .querySelectorAll('img')
-        .forEach((img) => imageUrls.push(img.src));
+      const evaluateRes = await page.evaluate(() => {
+        const imageUrls: string[] = [];
+        const videoUrls: string[] = [];
+        document
+          .querySelectorAll('img')
+          .forEach((img) => imageUrls.push(img.src));
 
-      document.querySelectorAll('video').forEach((video) => {
-        video
-          .querySelectorAll('source')
-          .forEach((source) => videoUrls.push(source.src));
-        if (video.src) {
-          videoUrls.push(video.src);
-        }
+        document.querySelectorAll('video').forEach((video) => {
+          video
+            .querySelectorAll('source')
+            .forEach((source) => videoUrls.push(source.src));
+          if (video.src) {
+            videoUrls.push(video.src);
+          }
+        });
+
+        document
+          .querySelectorAll('iframe')
+          .forEach((iframe) => videoUrls.push(iframe.src));
+
+        return { imageUrls, videoUrls, error: null };
       });
-
-      return { imageUrls, videoUrls };
-    });
-
-    await browser.close();
-    return evaluateRes;
+      await browser.close();
+      return evaluateRes;
+    } catch (e) {
+      await browser.close();
+      return {
+        error: e.message,
+        imageUrls: [],
+        videoUrls: [],
+      };
+    } finally {
+    }
   }
 }

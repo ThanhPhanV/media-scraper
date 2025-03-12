@@ -30,6 +30,7 @@ export class ScraperService {
       scrape.map((scrape) => ({
         name: ScraperProcessQueueJob.SCRAPER_START_PROCESS,
         data: { id: scrape.id },
+        opts: { attempts: 3 },
       })),
     );
     return scrape;

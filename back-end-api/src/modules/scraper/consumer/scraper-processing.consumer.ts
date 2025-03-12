@@ -34,70 +34,77 @@ export class ScraperProcessingConsumer extends WorkerHost {
   }
 
   async processScraper(job: Job<ScrapeProcessDto>) {
+    let shouldRetry = false;
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
     try {
-      const queryRunner = this.dataSource.createQueryRunner();
-      await queryRunner.connect();
-      await queryRunner.startTransaction();
+      const { id } = job.data;
+      const scraper = await this.scraperRepository.findOne({
+        where: { id },
+      });
+      if (!scraper) {
+        return false;
+      }
 
-      try {
-        const { id } = job.data;
-        const scraper = await this.scraperRepository.findOne({
-          where: { id },
-        });
-        if (!scraper) {
-          return false;
+      const scrapeResult = await this.playwrightService.scrape(scraper.url);
+      const mediaPayload = [];
+      if (!scrapeResult.error) {
+        mediaPayload.push(
+          ...scrapeResult.imageUrls.map((mediaUrl) => ({
+            url: mediaUrl,
+            type: MediaType.IMAGE,
+            scraperId: scraper.id,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          })),
+        );
+        mediaPayload.push(
+          ...scrapeResult.imageUrls.map((mediaUrl) => ({
+            url: mediaUrl,
+            type: MediaType.IMAGE,
+            scraperId: scraper.id,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          })),
+        );
+
+        if (mediaPayload.length) {
+          await queryRunner.manager
+            .getRepository(MediaEntity)
+            .save(mediaPayload);
         }
+      }
 
-        const scrapeResult = await this.playwrightService.scrape(scraper.url);
-        const mediaPayload = [];
-        if (scrapeResult?.imageUrls?.length) {
-          mediaPayload.push(
-            ...scrapeResult.imageUrls.map((mediaUrl) => ({
-              url: mediaUrl,
-              type: MediaType.IMAGE,
-              scraperId: scraper.id,
-              createdAt: new Date().toISOString(),
-              updatedAt: new Date().toISOString(),
-            })),
-          );
-        }
-        if (scrapeResult?.videoUrls?.length) {
-          mediaPayload.push(
-            ...scrapeResult.imageUrls.map((mediaUrl) => ({
-              url: mediaUrl,
-              type: MediaType.IMAGE,
-              scraperId: scraper.id,
-              createdAt: new Date().toISOString(),
-              updatedAt: new Date().toISOString(),
-            })),
-          );
-        }
-
-        await queryRunner.manager.getRepository(MediaEntity).save(mediaPayload);
-        await queryRunner.manager.getRepository(ScraperEntity).save({
-          ...scraper,
-          status: ScraperStatus.COMPLETED,
-        });
-
-        await queryRunner.commitTransaction();
-      } catch (err) {
+      if (scrapeResult.error) {
+        shouldRetry = true;
         this.loggerService.log({
-          message: err?.message,
-          url: `process ${job.name}`,
+          message: scrapeResult.error,
+          url: `process ${job.name} error`,
           body: JSON.stringify(job.data),
         });
-        await queryRunner.rollbackTransaction();
-      } finally {
-        await queryRunner.release();
-        return true;
       }
+
+      await queryRunner.manager.getRepository(ScraperEntity).save({
+        ...scraper,
+        status: scrapeResult.error
+          ? ScraperStatus.FAILED
+          : ScraperStatus.COMPLETED,
+      });
+
+      await queryRunner.commitTransaction();
     } catch (error) {
       this.loggerService.log({
         message: error?.message,
         url: `process ${job.name}`,
         body: JSON.stringify(job.data),
       });
-      return;
+    } finally {
+      await queryRunner.release();
+      if (shouldRetry) {
+        return job.retry();
+      }
+      return true;
     }
   }
 }

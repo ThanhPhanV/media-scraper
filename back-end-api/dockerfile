@@ -17,7 +17,6 @@ RUN npm install
 COPY --chown=node:node . .
 
 RUN npm run build
-RUN npm install puppeteer
 
 EXPOSE 3000
 

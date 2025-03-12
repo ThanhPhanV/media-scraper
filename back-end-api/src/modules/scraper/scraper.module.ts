@@ -18,9 +18,6 @@ import { PlaywrightService } from './playwright.service';
     UserModule,
     TypeOrmModule.forFeature([ScraperEntity, MediaEntity]),
     BullModule.registerQueue({
-      name: ScraperQueueName.SCRAPER_STORAGE_QUEUE,
-    }),
-    BullModule.registerQueue({
       name: ScraperQueueName.SCRAPER_PROCESSING_QUEUE,
     }),
     LoggerModule,
