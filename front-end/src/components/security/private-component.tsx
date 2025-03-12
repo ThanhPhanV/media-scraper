@@ -1,17 +1,8 @@
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-export function PrivateComponent({ ...rest }) {
-  const navigate = useNavigate();
-  const token = localStorage.getItem("token");
+import { Navigate, Outlet } from "react-router-dom";
 
-  useEffect(() => {
-    if (!token) {
-      navigate("/sign-in");
-    }
-  }, [token]);
+const PrivateRoute = () => {
+  const isAuthenticated = !!localStorage.getItem("authToken"); // Replace with actual auth logic
+  return isAuthenticated ? <Outlet /> : <Navigate to="/sign-in" />;
+};
 
-  if (!token) {
-    return null;
-  }
-  return rest.children;
-}
+export default PrivateRoute;

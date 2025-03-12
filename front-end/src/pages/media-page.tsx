@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { PrivateComponent } from "../components/security/private-component";
 import { axios } from "../configs/axios.config";
 import { DashboardLayout } from "../layouts/dashboard.layout";
 import { useDispatch, useSelector } from "react-redux";
@@ -133,49 +132,47 @@ function MediaPage() {
   };
 
   return (
-    <PrivateComponent>
-      <DashboardLayout>
-        <div className="flex items-center">
-          <HeaderTitle title="Media" />
-          <IconButton onClick={() => reload()}>
-            <RestartAltIcon />
-          </IconButton>
+    <DashboardLayout>
+      <div className="flex items-center">
+        <HeaderTitle title="Media" />
+        <IconButton onClick={() => reload()}>
+          <RestartAltIcon />
+        </IconButton>
+      </div>
+      <div className="flex items-center mt-3">
+        <div className="flex items-center border border-gray-200 rounded-2xl p-2 w-[50%]">
+          <SearchIcon fontSize="medium" />
+          <input
+            type="text"
+            placeholder="Search url"
+            className="w-full p-2 border-none outline-none"
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+          />
         </div>
-        <div className="flex items-center mt-3">
-          <div className="flex items-center border border-gray-200 rounded-2xl p-2 w-[50%]">
-            <SearchIcon fontSize="medium" />
-            <input
-              type="text"
-              placeholder="Search url"
-              className="w-full p-2 border-none outline-none"
-              value={searchInput}
-              onChange={(e) => setSearchInput(e.target.value)}
-            />
-          </div>
-          <div className="ml-8">Type</div>
-          <div>
-            <select
-              className="ml-4 p-4 border border-gray-200 rounded-2xl"
-              value={type}
-              onChange={(e) => {
-                setType(e.target.value);
-              }}
-            >
-              <option value="">All</option>
-              <option value="image">Image</option>
-              <option value="video">Video</option>
-            </select>
-          </div>
+        <div className="ml-8">Type</div>
+        <div>
+          <select
+            className="ml-4 p-4 border border-gray-200 rounded-2xl"
+            value={type}
+            onChange={(e) => {
+              setType(e.target.value);
+            }}
+          >
+            <option value="">All</option>
+            <option value="image">Image</option>
+            <option value="video">Video</option>
+          </select>
         </div>
-        <BasicTable
-          data={formatDataToTable(media.media || [])}
-          page={media.page}
-          totalCount={media.totalCount}
-          totalPage={media.totalPage}
-          handleChangePage={handleChangePage}
-        />
-      </DashboardLayout>
-    </PrivateComponent>
+      </div>
+      <BasicTable
+        data={formatDataToTable(media.media || [])}
+        page={media.page}
+        totalCount={media.totalCount}
+        totalPage={media.totalPage}
+        handleChangePage={handleChangePage}
+      />
+    </DashboardLayout>
   );
 }
 

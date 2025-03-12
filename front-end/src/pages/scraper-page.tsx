@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { PrivateComponent } from "../components/security/private-component";
 import { axios } from "../configs/axios.config";
 import { DashboardLayout } from "../layouts/dashboard.layout";
 import { useDispatch, useSelector } from "react-redux";
@@ -112,33 +111,31 @@ function ScraperPage() {
   };
 
   return (
-    <PrivateComponent>
-      <DashboardLayout>
-        <div className="flex items-center">
-          <HeaderTitle title="Scrapers" />
-          <IconButton onClick={() => reload()}>
-            <RestartAltIcon />
-          </IconButton>
-        </div>
-        <BasicTable
-          data={formatDataToTable(scraper.scrapers || [])}
-          page={scraper.page}
-          totalCount={scraper.totalCount}
-          totalPage={scraper.totalPage}
-          handleChangePage={handleChangePage}
-        />
-        <HeaderTitle title="Add Scraper" />
-        <AddScraper
-          onAddScraper={onAddScraper}
-          register={register}
-          handleSubmit={handleSubmit}
-          reset={reset}
-          fields={fields}
-          onAppendNew={onAppendNew}
-          errors={errors}
-        />
-      </DashboardLayout>
-    </PrivateComponent>
+    <DashboardLayout>
+      <div className="flex items-center">
+        <HeaderTitle title="Scrapers" />
+        <IconButton onClick={() => reload()}>
+          <RestartAltIcon />
+        </IconButton>
+      </div>
+      <BasicTable
+        data={formatDataToTable(scraper.scrapers || [])}
+        page={scraper.page}
+        totalCount={scraper.totalCount}
+        totalPage={scraper.totalPage}
+        handleChangePage={handleChangePage}
+      />
+      <HeaderTitle title="Add Scraper" />
+      <AddScraper
+        onAddScraper={onAddScraper}
+        register={register}
+        handleSubmit={handleSubmit}
+        reset={reset}
+        fields={fields}
+        onAppendNew={onAppendNew}
+        errors={errors}
+      />
+    </DashboardLayout>
   );
 }
 
