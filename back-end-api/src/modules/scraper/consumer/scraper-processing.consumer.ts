@@ -60,9 +60,9 @@ export class ScraperProcessingConsumer extends WorkerHost {
           })),
         );
         mediaPayload.push(
-          ...scrapeResult.imageUrls.map((mediaUrl) => ({
+          ...scrapeResult.videoUrls.map((mediaUrl) => ({
             url: mediaUrl,
-            type: MediaType.IMAGE,
+            type: MediaType.VIDEO,
             scraperId: scraper.id,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),

@@ -5,11 +5,16 @@ export class PlaywrightService {
     const browser = await chromium.launch();
     try {
       const page = await browser.newPage();
-
       await page.goto(url, { waitUntil: 'networkidle' });
       await Promise.race([
-        page.waitForSelector('img', { timeout: 5000 }),
-        page.waitForSelector('video', { timeout: 5000 }),
+        page
+          .locator('img')
+          .first()
+          .waitFor({ state: 'attached', timeout: 10000 }),
+        page
+          .locator('video')
+          .first()
+          .waitFor({ state: 'attached', timeout: 10000 }),
       ]);
 
       const evaluateRes = await page.evaluate(() => {
