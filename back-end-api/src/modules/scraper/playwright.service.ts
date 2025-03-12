@@ -1,17 +1,16 @@
-import puppeteer from 'puppeteer';
+import { chromium } from 'playwright';
 
-export class PuppeteerService {
+export class PlaywrightService {
   async scrape(url: string) {
-    const browser = await puppeteer.launch();
+    const browser = await chromium.launch();
     const page = await browser.newPage();
 
-    await page.goto(url, { waitUntil: 'networkidle2' });
-    await page.waitForSelector('img, video', { timeout: 10000 });
-    await page.content();
+    await page.goto(url, { waitUntil: 'networkidle' });
+    // await page.waitForSelector('img, video', { timeout: 10000 });
 
     const evaluateRes = await page.evaluate(() => {
-      const imageUrls = [];
-      const videoUrls = [];
+      const imageUrls: string[] = [];
+      const videoUrls: string[] = [];
       document
         .querySelectorAll('img')
         .forEach((img) => imageUrls.push(img.src));

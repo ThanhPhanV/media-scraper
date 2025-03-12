@@ -5,20 +5,20 @@ import { ScrapeProcessDto } from '../dto/scrap-process-payload.dto';
 import { ScraperProcessQueueJob } from '../enum/scraper-process-queue.enum';
 import { ScraperQueueName } from '../enum/scraper-queue-name.enum';
 import { ScraperStatus } from '../enum/scraper-status.enum';
-import { PuppeteerService } from '../puppeteer.service';
 import { ScraperRepository } from '../repository/scraper.repository';
 import { LoggerService } from '../../../modules/logger/logger.service';
 import { DataSource } from 'typeorm';
 import { ScraperEntity } from '../entity/scraper.entity';
 import { MediaType } from '../../../modules/media/enum/media-type.enum';
 import { MediaEntity } from '../../../modules/media/entity/media.entity';
+import { PlaywrightService } from '../playwright.service';
 
 @Processor(ScraperQueueName.SCRAPER_PROCESSING_QUEUE)
 @Injectable()
 export class ScraperProcessingConsumer extends WorkerHost {
   constructor(
     private readonly scraperRepository: ScraperRepository,
-    private readonly puppeteerService: PuppeteerService,
+    private readonly playwrightService: PlaywrightService,
     private readonly loggerService: LoggerService,
     private dataSource: DataSource,
   ) {
@@ -48,7 +48,7 @@ export class ScraperProcessingConsumer extends WorkerHost {
           return false;
         }
 
-        const scrapeResult = await this.puppeteerService.scrape(scraper.url);
+        const scrapeResult = await this.playwrightService.scrape(scraper.url);
         const mediaPayload = [];
         if (scrapeResult?.imageUrls?.length) {
           mediaPayload.push(

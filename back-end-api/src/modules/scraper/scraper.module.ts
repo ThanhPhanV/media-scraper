@@ -8,10 +8,10 @@ import { ScraperEntity } from './entity/scraper.entity';
 import { BullModule } from '@nestjs/bullmq';
 import { ScraperQueueName } from './enum/scraper-queue-name.enum';
 import { ScraperProcessingConsumer } from './consumer/scraper-processing.consumer';
-import { PuppeteerService } from './puppeteer.service';
 import { LoggerModule } from '../logger/logger.module';
 import { MediaEntity } from '../media/entity/media.entity';
 import { MediaRepository } from '../media/repository/media.repository';
+import { PlaywrightService } from './playwright.service';
 
 @Module({
   imports: [
@@ -32,8 +32,8 @@ import { MediaRepository } from '../media/repository/media.repository';
     ScraperRepository,
     ScraperProcessingConsumer,
     {
-      provide: PuppeteerService,
-      useValue: new PuppeteerService(),
+      provide: PlaywrightService,
+      useValue: new PlaywrightService(),
     },
   ],
 })
