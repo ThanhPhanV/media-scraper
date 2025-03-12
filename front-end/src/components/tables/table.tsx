@@ -6,6 +6,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { Pagination } from "@mui/material";
+import Tooltip from "../tooltip";
 
 export interface BasicTableData {
   titles: string[];
@@ -48,7 +49,9 @@ export default function BasicTable({
                 {row.map((cell) => {
                   return (
                     <TableCell key={cell} size="medium" width={200}>
-                      {cell}
+                      <Tooltip text={cell}>
+                        <span className="truncate">{cell?.slice(0, 80)}</span>
+                      </Tooltip>
                     </TableCell>
                   );
                 })}
