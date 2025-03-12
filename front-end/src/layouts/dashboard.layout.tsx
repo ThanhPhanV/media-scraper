@@ -1,12 +1,12 @@
 import LogoutIcon from "@mui/icons-material/Logout";
-import { IconButton, LinearProgress } from "@mui/material";
+import { IconButton } from "@mui/material";
 import React from "react";
 import { AppTitle } from "../components/app-title";
 import { HeaderTitle } from "../components/h1-header";
 import { AppMenu } from "../components/menu";
+import { AppLoadingProgress } from "../components/progress/app-loading";
 import { useAppAuth } from "../hooks/auth-hook";
 import { useAppLoading } from "../hooks/use-app-loading";
-import { AppLoadingProgress } from "../components/progress/app-loading";
 
 export function DashboardLayout({
   children,

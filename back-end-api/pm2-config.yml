@@ -1,0 +1,7 @@
+apps:
+  - script: ./dist/main.js
+    name: "Media Scraper"
+    watch: false
+    instances: 1
+    exec_mode: cluster
+    autorestart: true

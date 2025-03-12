@@ -20,7 +20,8 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "typeorm": "typeorm-ts-node-commonjs",
     "migration:generate": "typeorm-ts-node-commonjs migration:generate -d ./src/config/migration.config.ts  ./src/migration/migration",
-    "migration:run": "typeorm-ts-node-commonjs migration:run -d ./src/config/migration.config.ts"
+    "migration:run": "typeorm-ts-node-commonjs migration:run -d ./src/config/migration.config.ts",
+    "migration:create": "typeorm-ts-node-commonjs migration:create ./src/migration/migration"
   },
   "dependencies": {
     "@nestjs/bullmq": "^11.0.2",

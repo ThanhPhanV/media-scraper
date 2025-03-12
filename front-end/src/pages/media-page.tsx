@@ -63,6 +63,7 @@ function MediaPage() {
     event: React.ChangeEvent<unknown>,
     value: number
   ) => {
+    event.preventDefault();
     setPage(value);
   };
 
