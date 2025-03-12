@@ -12,7 +12,7 @@ import { CreateScrapeDto } from './dto/create-scraper.dto';
 import { ScraperService } from './scraper.service';
 import { GetScraperDto } from './dto/get-scraper.dto';
 
-@UseGuards(AuthGuard)
+// @UseGuards(AuthGuard)
 @Controller('scraper')
 export class ScraperController {
   constructor(private readonly scraperService: ScraperService) {}

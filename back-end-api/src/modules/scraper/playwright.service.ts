@@ -6,7 +6,10 @@ export class PlaywrightService {
     const page = await browser.newPage();
 
     await page.goto(url, { waitUntil: 'networkidle' });
-    // await page.waitForSelector('img, video', { timeout: 10000 });
+    await Promise.race([
+      page.waitForSelector('img', { timeout: 10000 }),
+      page.waitForSelector('video', { timeout: 10000 }),
+    ]);
 
     const evaluateRes = await page.evaluate(() => {
       const imageUrls: string[] = [];
