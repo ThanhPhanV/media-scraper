@@ -7,11 +7,17 @@ export class PlaywrightService {
       const page = await browser.newPage();
 
       await page.goto(url, { waitUntil: 'networkidle' });
-      await Promise.race([
-        page.waitForSelector('img', { timeout: 5000 }),
-        page.waitForSelector('video', { timeout: 5000 }),
-      ]);
 
+      await Promise.race([
+        page
+          .locator('img')
+          .first()
+          .waitFor({ state: 'attached', timeout: 10000 }),
+        page
+          .locator('video')
+          .first()
+          .waitFor({ state: 'attached', timeout: 10000 }),
+      ]);
       const evaluateRes = await page.evaluate(() => {
         const imageUrls: string[] = [];
         const videoUrls: string[] = [];

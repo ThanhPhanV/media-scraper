@@ -8,6 +8,7 @@ import { ScraperProcessQueueJob } from './enum/scraper-process-queue.enum';
 import { GetScraperDto } from './dto/get-scraper.dto';
 import { UserEntity } from '../user/entity/user.entity';
 import { calPaginationRes } from 'src/utils/pagination.util';
+import { PlaywrightService } from './playwright.service';
 
 @Injectable()
 export class ScraperService {
@@ -15,6 +16,7 @@ export class ScraperService {
     private readonly scraperRepository: ScraperRepository,
     @InjectQueue(ScraperQueueName.SCRAPER_PROCESSING_QUEUE)
     private scraperProcessingQueue: Queue,
+    private readonly playwrightService: PlaywrightService,
   ) {}
 
   async saveInitScrape(payload: CreateScrapeDto, user: UserEntity) {
@@ -34,6 +36,10 @@ export class ScraperService {
       })),
     );
     return scrape;
+  }
+
+  async saveInitScrapeV2(payload: CreateScrapeDto, user: UserEntity) {
+    return this.playwrightService.scrape(payload.urls[0]);
   }
 
   async getScrapers(payload: GetScraperDto, user: UserEntity) {
