@@ -3,6 +3,7 @@ import { MediaRepository } from './repository/media.repository';
 import { UserEntity } from '../user/entity/user.entity';
 import { GetMediaDto } from './dto/get-media.dto';
 import { calPaginationRes } from 'src/utils/pagination.util';
+import { Brackets } from 'typeorm';
 
 @Injectable()
 export class MediaService {
@@ -19,13 +20,17 @@ export class MediaService {
     );
 
     if (payload.search) {
-      mediaQuery.andWhere('media.url LIKE :search', {
-        search: `%${payload.search}%`,
-      });
-      mediaQuery.orWhere('scraper.url LIKE :search', {
-        search: `%${payload.search}%`,
-      });
+      mediaQuery.andWhere(
+        new Brackets((qb) => {
+          qb.where('media.url LIKE :search', {
+            search: `%${payload.search}%`,
+          }).orWhere('scraper.url LIKE :search', {
+            search: `%${payload.search}%`,
+          });
+        }),
+      );
     }
+
     if (payload.type) {
       mediaQuery.andWhere('media.type = :type', {
         type: payload.type,
