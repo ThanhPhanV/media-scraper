@@ -1,0 +1,33 @@
+### ENV FOR APP
+NODE_ENV=Dev
+
+# Database
+DB_TYPE=postgres
+DB_HOST=db
+DB_PORT=5432
+DB_NAME=db_name
+DB_USER=user_name_v2
+DB_PASSWORD=password
+
+# Bcrypt
+BCRYPT_SALT_ROUNDS=10
+
+# Redis
+REDIS_HOST=redis
+REDIS_PORT= 6379
+
+# ElasticSearch
+ES_URL=
+ES_API_KEY_ID=
+ES_API_KEY_SECRET=
+LOGGER_INDEX=
+
+
+### ENV FOR POSTGRES
+POSTGRES_USER=user_name_v2
+POSTGRES_PASSWORD=password
+POSTGRES_DB=db_name
+
+### FRONT END
+VITE_API_URL=http://localhost:3000/api
+
