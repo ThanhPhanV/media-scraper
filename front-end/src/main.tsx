@@ -8,29 +8,29 @@ import { store } from "./redux/store.ts";
 import PrivateRoute from "./components/security/private-component.tsx";
 
 createRoot(document.getElementById("root")!).render(
-  // <StrictMode>
-  <Provider store={store}>
-    <BrowserRouter>
-      <Routes>
-        {AppRoutes.map((route) => {
-          if (route.isPrivate) {
-            return (
-              <Route key={route.path} element={<PrivateRoute />}>
-                <Route path={route.path} element={<route.element />} />
-              </Route>
-            );
-          }
+  <StrictMode>
+    <Provider store={store}>
+      <BrowserRouter>
+        <Routes>
+          {AppRoutes.map((route) => {
+            if (route.isPrivate) {
+              return (
+                <Route key={route.path} element={<PrivateRoute />}>
+                  <Route path={route.path} element={<route.element />} />
+                </Route>
+              );
+            }
 
-          return (
-            <Route
-              key={route.path}
-              path={route.path}
-              element={<route.element />}
-            />
-          );
-        })}
-      </Routes>
-    </BrowserRouter>
-  </Provider>
-  // </StrictMode>
+            return (
+              <Route
+                key={route.path}
+                path={route.path}
+                element={<route.element />}
+              />
+            );
+          })}
+        </Routes>
+      </BrowserRouter>
+    </Provider>
+  </StrictMode>
 );
