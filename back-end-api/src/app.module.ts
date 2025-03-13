@@ -10,12 +10,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { DatabaseConfigService } from './config/database.config';
 import { LoggerService } from './modules/logger/logger.service';
-import { LoggerRepository } from './modules/logger/repository/logger.repository';
-import { LoggerEntity } from './modules/logger/entity/logger.entity';
 import { HttpExceptionFilter } from './filter/http-exception.filter';
 import { CatchEverythingFilter } from './filter/all-exception.filter';
 import { BullModule } from '@nestjs/bullmq';
 import { MediaModule } from './modules/media/media.module';
+import { ElasticsearchModule } from './modules/elasticsearch/elasticsearch.module';
 
 @Module({
   imports: [
@@ -34,17 +33,17 @@ import { MediaModule } from './modules/media/media.module';
       }),
       inject: [ConfigService],
     }),
-    TypeOrmModule.forFeature([LoggerEntity]),
+    TypeOrmModule.forFeature([]),
     AuthModule,
     ScraperModule,
     UserModule,
     MediaModule,
+    ElasticsearchModule,
   ],
   controllers: [AppController],
   providers: [
     AppService,
     LoggerService,
-    LoggerRepository,
     {
       provide: APP_INTERCEPTOR,
       useClass: ResTransformInterceptor,

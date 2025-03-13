@@ -1,12 +1,11 @@
 import { Module } from '@nestjs/common';
 import { LoggerService } from './logger.service';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { LoggerEntity } from './entity/logger.entity';
-import { LoggerRepository } from './repository/logger.repository';
+import { ElasticsearchModule } from '../elasticsearch/elasticsearch.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([LoggerEntity])],
-  providers: [LoggerService, LoggerRepository],
+  imports: [ElasticsearchModule],
+  providers: [LoggerService],
   exports: [LoggerService],
+  controllers: [],
 })
 export class LoggerModule {}

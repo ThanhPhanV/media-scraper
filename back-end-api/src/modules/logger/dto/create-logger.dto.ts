@@ -1,3 +1,8 @@
-import { LoggerEntity } from '../entity/logger.entity';
-
-export class CreateLoggerDto extends LoggerEntity {}
+export class CreateLoggerDto {
+  url?: string;
+  body?: any;
+  message?: string;
+  status?: number;
+  method?: string;
+  res?: any;
+}

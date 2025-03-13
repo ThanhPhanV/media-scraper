@@ -24,6 +24,7 @@
     "migration:create": "typeorm-ts-node-commonjs migration:create ./src/migration/migration"
   },
   "dependencies": {
+    "@elastic/elasticsearch": "^8.17.1",
     "@nestjs/bullmq": "^11.0.2",
     "@nestjs/common": "^10.0.0",
     "@nestjs/config": "^4.0.1",
