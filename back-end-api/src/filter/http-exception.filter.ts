@@ -22,7 +22,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       method: request.method,
       status: status,
       message: exception.message,
-      res: exception.getResponse(),
+      res: JSON.stringify(exception.getResponse() || ''),
     });
 
     const res: ErrorResponse = {

@@ -37,8 +37,8 @@ export class CatchEverythingFilter implements ExceptionFilter {
       method: request.method,
       status: httpStatus,
       message: exception instanceof Error ? exception.message : 'Unknown error',
-      body: request.body,
-      res: responseBody,
+      body: JSON.stringify(request.body || ''),
+      res: JSON.stringify(responseBody || ''),
     });
 
     httpAdapter.reply(ctx.getResponse(), responseBody, httpStatus);

@@ -29,9 +29,9 @@ export class ResTransformInterceptor<T>
         this.loggerService.log({
           url: request.url,
           method: request.method,
-          body: request.body,
+          body: JSON.stringify(request.body || ''),
           status: response.statusCode,
-          res: data,
+          res: JSON.stringify(data || ''),
         });
         return { status: response.statusCode, data };
       }),

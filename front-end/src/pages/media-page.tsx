@@ -73,7 +73,7 @@ function MediaPage() {
       search: searchInput,
     });
     setIsFirstRender(false);
-  }, [searchInput, type, page]);
+  }, [type, page]);
 
   useEffect(() => {
     if (isFirstRender) return;
@@ -93,22 +93,6 @@ function MediaPage() {
     }, 500);
     return () => clearTimeout(timeout);
   }, [searchInput]);
-
-  useEffect(() => {
-    if (isFirstRender) return;
-    fetchData({
-      page: page ? Number(page) : 1,
-      type,
-      search: searchInput,
-    });
-    setSearchParams(
-      removeEmptyFields({
-        search: searchInput,
-        type,
-        page: page.toString(),
-      })
-    );
-  }, [page, type]);
 
   const reload = () => {
     fetchData({
