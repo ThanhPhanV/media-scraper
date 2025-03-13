@@ -20,22 +20,28 @@ export class PlaywrightService {
       const evaluateRes = await page.evaluate(() => {
         const imageUrls: string[] = [];
         const videoUrls: string[] = [];
-        document
-          .querySelectorAll('img')
-          .forEach((img) => imageUrls.push(img.src));
+        document.querySelectorAll('img').forEach((img) => {
+          if (img.src) {
+            imageUrls.push(img.src);
+          }
+        });
 
         document.querySelectorAll('video').forEach((video) => {
-          video
-            .querySelectorAll('source')
-            .forEach((source) => videoUrls.push(source.src));
+          video.querySelectorAll('source').forEach((source) => {
+            if (source.src) {
+              videoUrls.push(source.src);
+            }
+          });
           if (video.src) {
             videoUrls.push(video.src);
           }
         });
 
-        document
-          .querySelectorAll('iframe')
-          .forEach((iframe) => videoUrls.push(iframe.src));
+        document.querySelectorAll('iframe').forEach((iframe) => {
+          if (iframe.src) {
+            videoUrls.push(iframe.src);
+          }
+        });
 
         return { imageUrls, videoUrls, error: null };
       });
