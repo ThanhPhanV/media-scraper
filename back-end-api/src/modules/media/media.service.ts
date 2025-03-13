@@ -22,6 +22,9 @@ export class MediaService {
       mediaQuery.andWhere('media.url LIKE :search', {
         search: `%${payload.search}%`,
       });
+      mediaQuery.orWhere('scraper.url LIKE :search', {
+        search: `%${payload.search}%`,
+      });
     }
     if (payload.type) {
       mediaQuery.andWhere('media.type = :type', {

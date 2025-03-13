@@ -84,10 +84,11 @@ function ScraperPage() {
   }, [page]);
 
   const formatDataToTable = (scrapers: IScraper[]) => {
-    const titles = ["URL", "STATUS", "CREATED DATE"];
+    const titles = ["ID", "URL", "STATUS", "CREATED DATE"];
     return {
       titles,
       rows: scrapers.map((scraper) => [
+        scraper.id,
         scraper.url,
         scraper.status,
         formatLocalTime(scraper.createdAt),

@@ -103,13 +103,14 @@ function MediaPage() {
   };
 
   const formatDataToTable = (media: IMedia[]) => {
-    const titles = ["ID", "URL", "TYPE", "CREATED DATE"];
+    const titles = ["ID", "URL", "TYPE", "SCRAPER URL", "CREATED DATE"];
     return {
       titles,
       rows: media.map((mediaElement) => [
         mediaElement.id,
         mediaElement.url,
         mediaElement.type,
+        mediaElement.scraper?.url,
         formatLocalTime(mediaElement.createdAt),
       ]),
     };

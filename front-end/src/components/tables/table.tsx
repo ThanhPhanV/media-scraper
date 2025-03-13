@@ -33,11 +33,15 @@ export default function BasicTable({
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
-              {titles.map((title) => (
-                <TableCell key={title}>
-                  <span className="font-bold ">{title}</span>
-                </TableCell>
-              ))}
+              {titles.map((title, index: number) =>
+                index <= 0 ? (
+                  <></>
+                ) : (
+                  <TableCell key={title}>
+                    <span className="font-bold ">{title}</span>
+                  </TableCell>
+                )
+              )}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -46,7 +50,10 @@ export default function BasicTable({
                 key={row[0]}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
-                {row.map((cell) => {
+                {row.map((cell, index: number) => {
+                  if (index === 0) {
+                    return <></>;
+                  }
                   return (
                     <TableCell key={cell} size="medium" width={200}>
                       <Tooltip text={cell}>
